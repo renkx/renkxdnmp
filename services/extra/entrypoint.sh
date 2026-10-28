@@ -42,7 +42,7 @@ if [[ "$role" = "http" ]]; then
     fi
 elif [[ "$role" = "cron" ]]; then
     echo "cron starting ..."
-    exec supercronic /etc/crontabs/www-data
+    exec supercronic /etc/cron.d/www-data
 elif [[ "$role" = "queue" ]]; then
     echo "queue customer worker starting ..."
     exec /usr/local/bin/php /www/wwwroot/artisan queue:work --queue="$queue" --verbose
