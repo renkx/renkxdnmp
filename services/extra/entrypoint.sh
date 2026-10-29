@@ -33,26 +33,26 @@ echo
 echo "start time：`date '+%Y-%m-%d %H:%M:%S'`"
 
 # shellcheck disable=SC2039
-if [[ "$role" = "http" ]]; then
+if [ "$role" = "http" ]; then
     echo 'http starting ...'
-    if [[ $http_max_request -gt 0 ]]; then
+    if [ "$http_max_request" -gt 0 ]; then
       exec /usr/local/bin/php /www/wwwroot/artisan octane:start --host=0.0.0.0 --port="$http_port" --workers="$http_workers" --task-workers="$task_workers" --max-requests="$http_max_request"
     else
       exec /usr/local/bin/php /www/wwwroot/artisan octane:start --host=0.0.0.0 --port="$http_port" --workers="$http_workers" --task-workers="$task_workers"
     fi
-elif [[ "$role" = "cron" ]]; then
+elif [ "$role" = "cron" ]; then
     echo "cron starting ..."
     exec supercronic /etc/cron.d/www-data
-elif [[ "$role" = "queue" ]]; then
+elif [ "$role" = "queue" ]; then
     echo "queue customer worker starting ..."
     exec /usr/local/bin/php /www/wwwroot/artisan queue:work --queue="$queue" --verbose
-elif [[ "$role" = "horizon" ]]; then
+elif [ "$role" = "horizon" ]; then
     echo "horizon supervisor starting ..."
-    if [[ "$queue" = "" && "$queue_max_processes" = "" ]]; then
+    if [ "$queue" = "" ] && [ "$queue_max_processes" = "" ]; then
         exec /usr/local/bin/php /www/wwwroot/artisan horizon --environment=production --verbose
-    elif [[ "$queue_max_processes" = "" ]]; then
+    elif [ "$queue_max_processes" = "" ]; then
         exec /usr/local/bin/php /www/wwwroot/artisan horizon --environment=production --queue="$queue" --verbose
-    elif [[ "$queue" = "" ]]; then
+    elif [ "$queue" = "" ]; then
         exec /usr/local/bin/php /www/wwwroot/artisan horizon --environment=production --maxProcesses="$queue_max_processes" --verbose
     else
         exec /usr/local/bin/php /www/wwwroot/artisan horizon --environment=production --queue="$queue" --maxProcesses="$queue_max_processes" --verbose
@@ -60,4 +60,3 @@ elif [[ "$role" = "horizon" ]]; then
 else
     exec tail -f /usr/local/bin/entrypoint
 fi
-
